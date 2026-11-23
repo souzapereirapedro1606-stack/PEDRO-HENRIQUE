@@ -1,0 +1,308 @@
+html
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Expectativa de Vida</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #1e293b;
+            --muted: #64748b;
+            --border: #e2e8f0;
+            --success: #10b981;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: var(--card);
+            width: 100%;
+            max-width: 550px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            padding: 32px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        header h1 {
+            font-size: 1.6rem;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        header p {
+            font-size: 0.95rem;
+            color: var(--muted);
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+        }
+
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            color: var(--text);
+            background-color: #fff;
+            transition: border-color 0.2s;
+        }
+
+        input[type="number"]:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .resultado {
+            display: none;
+            margin-top: 28px;
+            padding: 20px;
+            background-color: #eff6ff;
+            border-left: 5px solid var(--primary);
+            border-radius: 8px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .resultado h2 {
+            font-size: 1.1rem;
+            color: var(--muted);
+            margin-bottom: 4px;
+        }
+
+        .idade-destaque {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .dicas {
+            font-size: 0.9rem;
+            color: var(--text);
+            line-height: 1.5;
+        }
+
+        .aviso {
+            margin-top: 20px;
+            font-size: 0.78rem;
+            color: var(--muted);
+            text-align: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Simulador de Expectativa de Vida</h1>
+        <p>Descubra uma estimativa com base nos seus hábitos diários.</p>
+    </header>
+
+    <form id="form-expectativa">
+        <div class="form-group">
+            <label for="idade">Sua idade atual (anos):</label>
+            <input type="number" id="idade" min="1" max="115" placeholder="Ex: 30" required>
+        </div>
+
+        <div class="form-group">
+            <label for="sexo">Sexo biológico:</label>
+            <select id="sexo" required>
+                <option value="feminino">Feminino</option>
+                <option value="masculino">Masculino</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="exercicios">Frequência de atividade física:</label>
+            <select id="exercicios" required>
+                <option value="sedentario">Sedentário (nenhuma atividade)</option>
+                <option value="moderado">Moderado (1 a 3 vezes por semana)</option>
+                <option value="ativo">Ativo (4 ou mais vezes por semana)</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="alimentacao">Como é a sua alimentação?</label>
+            <select id="alimentacao" required>
+                <option value="ruim">Rica em ultraprocessados e açúcar</option>
+                <option value="media">Equilibrada na maior parte do tempo</option>
+                <option value="saudavel">Saudável (frutas, vegetais e pouco açúcar)</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="tabagismo">Você fuma?</label>
+            <select id="tabagismo" required>
+                <option value="nao">Não fumo</option>
+                <option value="ex">Ex-fumante</option>
+                <option value="sim">Sim, fumo regularmente</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="sono">Média de horas de sono por noite:</label>
+            <select id="sono" required>
+                <option value="ideal">7 a 8 horas (Ideal)</option>
+                <option value="pouco">Menos de 6 horas</option>
+                <option value="muito">Mais de 9 horas</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="estresse">Nível de estresse no dia a dia:</label>
+            <select id="estresse" required>
+                <option value="baixo">Baixo / Controlado</option>
+                <option value="medio">Moderado</option>
+                <option value="alto">Alto / Constante</option>
+            </select>
+        </div>
+
+        <button type="submit">Calcular Expectativa</button>
+    </form>
+
+    <div class="resultado" id="caixa-resultado">
+        <h2>Sua expectativa de vida estimada é de:</h2>
+        <div class="idade-destaque" id="valor-expectativa">-- anos</div>
+        <p class="dicas" id="texto-dicas"></p>
+    </div>
+
+    <p class="aviso">
+        *Nota: Este cálculo é apenas uma simulação educativa baseada em médias estatísticas e não substitui avaliação médica.
+    </p>
+</div>
+
+<script>
+    document.getElementById('form-expectativa').addEventListener('submit', function(evento) {
+        evento.preventDefault();
+
+        // Captura os valores do formulário
+        const idadeAtual = parseInt(document.getElementById('idade').value);
+        const sexo = document.getElementById('sexo').value;
+        const exercicios = document.getElementById('exercicios').value;
+        const alimentacao = document.getElementById('alimentacao').value;
+        const tabagismo = document.getElementById('tabagismo').value;
+        const sono = document.getElementById('sono').value;
+        const estresse = document.getElementById('estresse').value;
+
+        // Base estatística aproximada (referência Brasil/IBGE)
+        let expectativa = (sexo === 'feminino') ? 80 : 73;
+        let dicas = [];
+
+        // Ajuste por exercícios físicos
+        if (exercicios === 'sedentario') {
+            expectativa -= 3;
+            dicas.push("Praticar exercícios regularmente pode adicionar anos à sua vida.");
+        } else if (exercicios === 'ativo') {
+            expectativa += 4;
+        } else {
+            expectativa += 2;
+        }
+
+        // Ajuste por alimentação
+        if (alimentacao === 'ruim') {
+            expectativa -= 3;
+            dicas.push("Reduzir alimentos ultraprocessados melhora a saúde cardiovascular.");
+        } else if (alimentacao === 'saudavel') {
+            expectativa += 3;
+        }
+
+        // Ajuste por tabagismo
+        if (tabagismo === 'sim') {
+            expectativa -= 8;
+            dicas.push("Parar de fumar é o fator isolado que mais traz benefícios imediatos à longevidade.");
+        } else if (tabagismo === 'ex') {
+            expectativa -= 2;
+        }
+
+        // Ajuste por sono
+        if (sono === 'pouco' || sono === 'muito') {
+            expectativa -= 2;
+            dicas.push("Manter uma rotina de 7 a 8 horas de sono ajuda na regeneração do organismo.");
+        } else {
+            expectativa += 1;
+        }
+
+        // Ajuste por estresse
+        if (estresse === 'alto') {
+            expectativa -= 3;
+            dicas.push("Técnicas de relaxamento e lazer ajudam a controlar o estresse crônico.");
+        } else if (estresse === 'baixo') {
+            expectativa += 1;
+        }
+
+        // Garante que a expectativa não seja menor que a idade atual + 1
+        if (expectativa <= idadeAtual) {
+            expectativa = idadeAtual + 2;
+        }
+
+        const anosRestantes = expectativa - idadeAtual;
+
+        // Exibe os resultados na tela
+        document.getElementById('valor-expectativa').innerText = `${expectativa} anos`;
+        
+        let mensagemFinal = `Com base nas suas respostas, você ainda tem cerca de <strong>${anosRestantes} anos</strong> pela frente. `;
+        if (dicas.length > 0) {
+            mensagemFinal += "<br><br><strong>Dica para melhorar:</strong> " + dicas[0];
+        } else {
+            mensagemFinal += "<br><br>Parabéns! Seus hábitos estão ótimos para manter uma vida longa e saudável.";
+        }
+
+        document.getElementById('texto-dicas').innerHTML = mensagemFinal;
